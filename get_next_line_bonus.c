@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vgoret <vgoret@student.42.fr>              +#+  +:+       +#+        */
+/*   By: victor <victor@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:09:07 by vgoret            #+#    #+#             */
-/*   Updated: 2022/12/07 13:20:25 by vgoret           ###   ########.fr       */
+/*   Updated: 2022/12/11 15:58:04 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,8 @@ char	*get_next_line(int fd)
 	save[fd] = recupfile(save[fd], fd);
 	line = recupline(save[fd]);
 	save[fd] = grostrimard(save[fd]);
+	if (ft_strlen(save[fd]) == 0)
+		free(save[fd]);
 	return (line);
 }
 

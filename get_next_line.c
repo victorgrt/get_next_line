@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vgoret <vgoret@student.42.fr>              +#+  +:+       +#+        */
+/*   By: victor <victor@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:11:33 by vgoret            #+#    #+#             */
-/*   Updated: 2022/12/07 13:08:42 by vgoret           ###   ########.fr       */
+/*   Updated: 2022/12/11 15:55:42 by victor           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ Finalement on appelle notre fonction grostrimard (dans save) pour s'assurer
 qu'on a bien une seule ligne dans save et pas de characteres en trop (ligne
 suivante). Finalement, on va return line qui contient donc une seule ligne
 du fichier.
+On free save si ft_strlen sinon on ecrase un null
 */
 
 char	*get_next_line(int fd)
@@ -150,29 +151,31 @@ char	*get_next_line(int fd)
 	save[fd] = recupfile(save[fd], fd);
 	line = recupline(save[fd]);
 	save[fd] = grostrimard(save[fd]);
+	if (ft_strlen(save[fd]) == 0)
+		free(save[fd]);
 	return (line);
 }
 
-/*#include <stdio.h>
+#include <stdio.h>
 int main(void)
 {
 	int fd;
-	int fd2;
+	// int fd2;
 	int	i = 1;
 	char	*res;
 	fd = open("test.txt", O_RDONLY);
-	fd2 = open("test2.txt", O_RDONLY);
+	// fd2 = open("test2.txt", O_RDONLY);
 
-	while (i <= 4)
+	while (i <= 5)
 	{	
 		res = get_next_line(fd);
 		printf("%s", res);
 		free(res);
-		res = get_next_line(fd2);
-		printf("%s", res);
-		free(res);
+		// res = get_next_line(fd2);
+		// printf("%s", res);
+		// free(res);
 		i++;
 	}
 	close(fd);
 	return (0);
-}*/
+}
