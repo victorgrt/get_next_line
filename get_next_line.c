@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: victor <victor@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vgoret <vgoret@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 16:11:33 by vgoret            #+#    #+#             */
-/*   Updated: 2022/12/11 15:55:42 by victor           ###   ########.fr       */
+/*   Updated: 2022/12/12 16:00:21 by vgoret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,10 @@ char	*recupline(char *save)
 }
 
 /* 
-! grostrimard :
+! trimming_static :
+Il se peut qu'on ait lu un partie de la liste suivante a cause de 
+BUFFER_SIZE donc on a besoin de trimmer save pour s'assurer qu'on
+ne perdre pas de donnees.
 On a besoin d'un buffeur pour ne pas perdre de donnees et de deux compteurs.
 On commence par verifier que save n'est pas vide. Ensuite on va parcourir la
 chaine jusqu'a trouve un '\n' ou '\0' + 1 pour avoir le '\n'.
@@ -98,7 +101,7 @@ tant qu'on a pas trouve notre prochain '\0'. Quand c'est fini, on ajoute
 un '\0' a la main et on return notre buffer.
 */
 
-char	*grostrimard(char *save)
+char	*trimming_static(char *save)
 {
 	char	*buff;
 	int		i;
@@ -111,9 +114,11 @@ char	*grostrimard(char *save)
 		i++;
 	if (save[i] == '\n')
 		i++;
+	if (ft_strlen(save) == 0)
+		return (free(save), NULL);
 	buff = malloc(sizeof(char) * (ft_strlen(save) - i + 1));
 	if (!buff)
-		return (NULL);
+		return (free(buff), free(save), NULL);
 	j = 0;
 	while (save[i] != '\0')
 	{
@@ -122,8 +127,7 @@ char	*grostrimard(char *save)
 		j++;
 	}
 	buff[j] = '\0';
-	free(save);
-	return (buff);
+	return (free(save), buff);
 }
 
 /*
@@ -138,7 +142,6 @@ Finalement on appelle notre fonction grostrimard (dans save) pour s'assurer
 qu'on a bien une seule ligne dans save et pas de characteres en trop (ligne
 suivante). Finalement, on va return line qui contient donc une seule ligne
 du fichier.
-On free save si ft_strlen sinon on ecrase un null
 */
 
 char	*get_next_line(int fd)
@@ -150,32 +153,25 @@ char	*get_next_line(int fd)
 		return (NULL);
 	save[fd] = recupfile(save[fd], fd);
 	line = recupline(save[fd]);
-	save[fd] = grostrimard(save[fd]);
-	if (ft_strlen(save[fd]) == 0)
-		free(save[fd]);
+	save[fd] = trimming_static(save[fd]);
 	return (line);
 }
 
-#include <stdio.h>
+/*#include <stdio.h>
 int main(void)
 {
 	int fd;
-	// int fd2;
-	int	i = 1;
+	// int	i = 1;
 	char	*res;
 	fd = open("test.txt", O_RDONLY);
-	// fd2 = open("test2.txt", O_RDONLY);
 
-	while (i <= 5)
-	{	
-		res = get_next_line(fd);
+	res = get_next_line(fd);
+	while (res)
+	{
 		printf("%s", res);
 		free(res);
-		// res = get_next_line(fd2);
-		// printf("%s", res);
-		// free(res);
-		i++;
+		res = get_next_line(fd);
 	}
 	close(fd);
 	return (0);
-}
+}*/

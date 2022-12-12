@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: victor <victor@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vgoret <vgoret@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:09:07 by vgoret            #+#    #+#             */
-/*   Updated: 2022/12/11 15:58:04 by victor           ###   ########.fr       */
+/*   Updated: 2022/12/12 16:32:25 by vgoret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*recupline(char *save)
 }
 
 /* 
-! grostrimard :
+! trimming_string :
 On a besoin d'un buffeur pour ne pas perdre de donnees et de deux compteurs.
 On commence par verifier que save n'est pas vide. Ensuite on va parcourir la
 chaine jusqu'a trouve un '\n' ou '\0' + 1 pour avoir le '\n'.
@@ -94,7 +94,7 @@ tant qu'on a pas trouve notre prochain '\0'. Quand c'est fini, on ajoute
 un '\0' a la main et on return notre buffer.
 */
 
-char	*grostrimard(char *save)
+char	*trimming_string(char *save)
 {
 	char	*buff;
 	int		i;
@@ -107,6 +107,8 @@ char	*grostrimard(char *save)
 		i++;
 	if (save[i] == '\n')
 		i++;
+	if (ft_strlen(save) == 0)
+		return (free(save), NULL);
 	buff = malloc(sizeof(char) * (ft_strlen(save) - i + 1));
 	if (!buff)
 		return (NULL);
@@ -118,8 +120,7 @@ char	*grostrimard(char *save)
 		j++;
 	}
 	buff[j] = '\0';
-	free(save);
-	return (buff);
+	return (free(save), buff);
 }
 
 /*
@@ -145,9 +146,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	save[fd] = recupfile(save[fd], fd);
 	line = recupline(save[fd]);
-	save[fd] = grostrimard(save[fd]);
-	if (ft_strlen(save[fd]) == 0)
-		free(save[fd]);
+	save[fd] = trimming_string(save[fd]);
 	return (line);
 }
 
@@ -155,21 +154,16 @@ char	*get_next_line(int fd)
 int main(void)
 {
 	int fd;
-	int fd2;
-	int	i = 1;
+	// int	i = 1;
 	char	*res;
 	fd = open("test.txt", O_RDONLY);
-	fd2 = open("test2.txt", O_RDONLY);
 
-	while (i <= 4)
-	{	
-		res = get_next_line(fd);
+	res = get_next_line_bonus(fd);
+	while (res)
+	{
 		printf("%s", res);
 		free(res);
-		res = get_next_line(fd2);
-		printf("%s", res);
-		free(res);
-		i++;
+		res = get_next_line_bonus(fd);
 	}
 	close(fd);
 	return (0);
